@@ -8,12 +8,28 @@ servers   = db.collection('servers')
 postbacks = db.collection('postbacks')
 
 # set up mongo indices
-servers.ensureIndex 'agent_key', (err) ->
+servers.ensureIndex 'agent_key', {unique: true}, (err) ->
 	console.log 'Error ensuring index on servers.agent_key: '+ err if err?
 postbacks.ensureIndex 'server', (err) ->
 	console.log 'Error ensuring index on postbacks.server: '+ err if err?
-postbacks.ensureIndex 'timestamp', (err) ->
+postbacks.ensureIndex {timestamp:-1}, (err) ->
 	console.log 'Error ensuring index on postbacks.timestamp: '+ err if err?
+
+# prune old postbacks
+prunePostbacks = () ->
+	if config.pruneEnabled
+		pruneDate = new Date new Date().getTime() - 1000 * 60 * 60 * 24 * config.pruneAge
+		console.log "Performing postback prune, deleting postbacks prior to #{pruneDate.toString()}"
+		postbacks.remove {"timestamp": {$lt: pruneDate}}, (err, count) ->
+			if err?
+				console.log "Error in postback prune: #{err}"
+			else
+				console.log "Pruned #{count || 0} postbacks"
+
+if config.pruneEnabled
+	# prune now and every 12 hours
+	prunePostbacks()
+	setInterval prunePostbacks, 3600000 * 12
 
 exports.servers = servers
 exports.postbacks = postbacks
