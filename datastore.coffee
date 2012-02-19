@@ -27,9 +27,9 @@ prunePostbacks = () ->
 				console.log "Pruned #{count || 0} postbacks"
 
 if config.pruneEnabled
-	# prune now and every 12 hours
+	# prune now and every 2 hours
 	prunePostbacks()
-	setInterval prunePostbacks, 3600000 * 12
+	setInterval prunePostbacks, 3600000 * 2
 
 exports.servers = servers
 exports.postbacks = postbacks
