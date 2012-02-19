@@ -1,6 +1,10 @@
 # Mongo DB config
 mongo     = require('mongoskin')
-db        = mongo.db('localhost:27017/monly')
+mongoUri  = process.env.MONGOLAB_URI || 'localhost:27017/monly'
+
+console.log "Connecting to mongo at: #{mongoUri}"
+
+db        = mongo.db mongoUri
 servers   = db.collection('servers')
 postbacks = db.collection('postbacks')
 
