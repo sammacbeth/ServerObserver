@@ -1,10 +1,9 @@
+config = require './config'
+
 # Mongo DB config
+console.log "Connecting to mongo at: #{config.mongoUri}"
 mongo     = require('mongoskin')
-mongoUri  = process.env.MONGOLAB_URI || 'localhost:27017/monly'
-
-console.log "Connecting to mongo at: #{mongoUri}"
-
-db        = mongo.db mongoUri
+db        = mongo.db config.mongoUri
 servers   = db.collection('servers')
 postbacks = db.collection('postbacks')
 
@@ -45,4 +44,4 @@ app.post '/postback/', (request, response) ->
 	# send a 203
 	response.send();
 
-app.listen process.env.PORT || 3000
+app.listen config.port
