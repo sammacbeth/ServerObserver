@@ -1,20 +1,5 @@
 config = require './config'
-
-# Mongo DB config
-console.log "Connecting to mongo at: #{config.mongoUri}"
-mongo     = require('mongoskin')
-db        = mongo.db config.mongoUri
-servers   = db.collection('servers')
-postbacks = db.collection('postbacks')
-
-# set up mongo indices
-servers.ensureIndex 'agent_key', (err) ->
-	console.log 'Error ensuring index on servers.agent_key: '+ err if err?
-postbacks.ensureIndex 'server', (err) ->
-	console.log 'Error ensuring index on postbacks.server: '+ err if err?
-postbacks.ensureIndex 'timestamp', (err) ->
-	console.log 'Error ensuring index on postbacks.timestamp: '+ err if err?
-
+ds = require './datastore'
 qs = require('querystring')
 
 # expressjs configuration
@@ -31,7 +16,7 @@ app.post '/postback/', (request, response) ->
 	if request.body? and request.body.payload?
 		payload = JSON.parse request.body.payload
 		if payload.agentKey?
-			servers.findOne {"agent_key": payload.agentKey}, (err, s) ->
+			ds.servers.findOne {"agent_key": payload.agentKey}, (err, s) ->
 				if err?
 					console.log err
 				else if s?
@@ -39,7 +24,7 @@ app.post '/postback/', (request, response) ->
 						server: s._id
 						timestamp: new Date()
 						payload: payload
-					postbacks.save data, {}, () ->
+					ds.postbacks.save data, {}, () ->
 
 	# send a 203
 	response.send();
