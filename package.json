@@ -5,9 +5,6 @@
   "repository": {
     "url": ""
   },
-  "engines": {
-    "node": "~0.4.12"
-  },
   "dependencies": {
     "coffee-script": "1.2.x",
     "express": "2.5.x",
