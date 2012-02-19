@@ -27,6 +27,18 @@ app.post '/postback/', (request, response) ->
 					ds.postbacks.save data, {}, () ->
 
 	# send a 203
-	response.send();
+	response.send()
+
+app.post '/server', (request, response) ->
+	if request.body?
+		console.log request.body
+		ds.servers.save request.body, {safe: true}, (err) ->
+			if err?
+				console.log err
+				response.send 500
+			else
+				response.send 201
+	else
+		response.send 400
 
 app.listen config.port
