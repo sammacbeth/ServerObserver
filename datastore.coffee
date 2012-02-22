@@ -20,11 +20,16 @@ prunePostbacks = () ->
 	if config.pruneEnabled
 		pruneDate = new Date new Date().getTime() - 1000 * 60 * 60 * 24 * config.pruneAge
 		console.log "Performing postback prune, deleting postbacks prior to #{pruneDate.toString()}"
-		postbacks.remove {"timestamp": {$lt: pruneDate}}, (err, count) ->
+		cursor = postbacks.find {"timestamp": {$lt: pruneDate}}
+		cursor.count (err, count) ->
 			if err?
 				console.log "Error in postback prune: #{err}"
 			else
-				console.log "Pruned #{count || 0} postbacks"
+				postbacks.remove {"timestamp": {$lt: pruneDate}}, (err) ->
+					if err?
+						console.log "Error in postback prune: #{err}"
+					else
+						console.log "Pruned #{count || 0} postbacks"
 
 if config.pruneEnabled
 	# prune now and every 2 hours
