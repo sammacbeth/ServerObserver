@@ -6,6 +6,7 @@ mongo     = require('mongoskin')
 db        = mongo.db config.mongoUri
 servers   = db.collection('servers')
 postbacks = db.collection('postbacks')
+users     = db.collection('users')
 
 # set up mongo indices
 servers.ensureIndex 'agent_key', {unique: true}, (err) ->
@@ -38,3 +39,4 @@ if config.pruneEnabled
 
 exports.servers = servers
 exports.postbacks = postbacks
+exports.users = users
