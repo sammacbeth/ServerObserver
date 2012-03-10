@@ -36,4 +36,5 @@ exports.list = (request, response) ->
 						cb null, sData
 			, (err, servers) ->
 				response.send
+					timestamp: new Date()
 					servers: servers
