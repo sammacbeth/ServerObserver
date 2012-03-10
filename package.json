@@ -10,7 +10,8 @@
     "express": "2.5.x",
     "mongoskin": "0.3.x",
     "bcrypt": "0.4.x",
-    "jade": "0.20.x"
+    "jade": "0.20.x",
+	"async": "0.1.x"
   },
   "devDependencies": {}
 }

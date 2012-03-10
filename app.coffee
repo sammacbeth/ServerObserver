@@ -9,6 +9,7 @@ app     = express.createServer(
 	express.session({ secret: 'thisissecret' }),
 	express.bodyParser()
 )
+app.use express.static __dirname + '/public'
 app.set 'view engine', 'jade'
 app.set 'view options', { layout: false }
 
@@ -33,6 +34,8 @@ app.get '/', (req, res) ->
 app.post '/postback/', postback.create
 app.post '/server', (req, res) ->
 	auth.check_auth req, res, server.create, deny
+app.get '/servers', (req, res) ->
+	auth.check_auth req, res, server.list, deny
 app.get '/login', (req, res) ->
 	auth.check_auth req, res, index_redirect, (rq, rs) ->
 		rs.render 'login'
