@@ -38,17 +38,18 @@ var timeToDuration = function(seconds, units) {
 
 $(document).ready(function() {
 	$.getJSON('servers', function(data) {
-		$('#status').append('<table><tr><th>Server</th><th>Last post</th><th>Uptime</th><th>Load</th></tr></table>');
+		$('#status').append('<table><tr><th>Server</th><th>Last post</th><th>Uptime</th><th>Load</th><th>Memory usage</th></tr></table>');
 		var table = $('#status table');
 		var now = new Date(data.timestamp);
 		$.each(data.servers, function(id, server) {
-			server.load = server.load.map(function (load) {
-				return Math.round(load*100) / 100;
+			server.data.system.load = server.data.system.load.map(function (load) {
+				return " " + Math.round(load*100) / 100;
 			});
 			table.append('<tr><td>' + server.name +'</td>'
-				+'<td>'+ timeDiff(new Date(server.timestamp), now) +' ago</td>'
-				+'<td>'+ timeToDuration(server.uptime) +'</td>'
-				+'<td>'+server.load+'</td>'
+				+'<td>'+ timeDiff(new Date(server.data.timestamp), now) +' ago</td>'
+				+'<td>'+ timeToDuration(server.data.system.uptime) +'</td>'
+				+'<td>'+ server.data.system.load +'</td>'
+				+'<td>'+ Math.round((1 - (server.data.system.memory.free / server.data.system.memory.total))*100) +'%</td>'
 			+'</tr>');
 		});
 	});

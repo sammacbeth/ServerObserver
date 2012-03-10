@@ -28,9 +28,8 @@ exports.list = (request, response) ->
 						cursor.nextObject (err, p) ->
 							if err
 								cb err
-							sData.timestamp = p.timestamp
-							sData.uptime = p.payload.system.uptime
-							sData.load = p.payload.system.load
+							sData.data = p.payload
+							sData.data.timestamp = p.timestamp
 							cb null, sData
 					else
 						cb null, sData
