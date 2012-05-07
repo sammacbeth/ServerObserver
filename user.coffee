@@ -43,6 +43,13 @@ exports.check_user = (username, password, callback) ->
 			else
 				bcrypt.compare password, user.passhash, callback
 
+randomPassword = () ->
+	text = ""
+	possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"
+	for i in [0..8]
+		text += possible.charAt(Math.floor(Math.random() * possible.length))
+	text
+
 # create root user on startup if no users exist
 console.log "Checking users"
 cursor = ds.users.find()
@@ -53,7 +60,7 @@ cursor.count (err, count) ->
 	if count == 0
 		console.log "Found no existing users, creating root account"
 		user = "root"
-		password = "admin"
+		password = randomPassword()
 		exports.create user, password, (err) ->
 			console.log "Created user #{user}, password #{password}"
 
