@@ -22,7 +22,10 @@ exports.list = (request, response) ->
 			async.map rawServers, (s, cb) ->
 				sData =
 					name: s.name
-				cursor = ds.postbacks.find {server: s._id}, {"sort": [['timestamp', 'desc']]}
+				cursor = ds.postbacks.find {server: s._id}, {
+					"sort": [['timestamp', 'desc']], 
+					"limit": 1
+				}
 				cursor.count (err, count) ->
 					if count > 0
 						cursor.nextObject (err, p) ->
